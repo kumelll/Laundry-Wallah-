@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Order Detail — Laundry Wallah</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+  <div class="dashboard-layout">
+    <header class="dash-header">
+      <a href="../index.html" class="logo">Laundry <span>Wallah</span></a>
+      <nav class="dash-nav">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="orders.html">My Orders</a>
+        <a href="new-order.html">Place Order</a>
+        <a href="../index.html">Logout</a>
+      </nav>
+    </header>
+
+    <main class="dash-main">
+      <a href="orders.html" class="back-home" style="display: inline-block; margin-bottom: 1rem;">← Back to Orders</a>
+      <h1 class="dash-title">Order #LW-1002</h1>
+      <p style="margin-bottom: 2rem; color: var(--gray);">Pickup: Feb 12, 9–12 PM | Drop: Feb 14, 3–6 PM</p>
+
+      <div class="status-timeline" style="margin-bottom: 2rem;">
+        <span class="status-dot done"></span> <span>Pickup Scheduled</span>
+        <span class="status-dot done"></span> <span>Clothes Picked Up</span>
+        <span class="status-dot done"></span> <span>Washing Completed</span>
+        <span class="status-dot active"></span> <strong>Out for Delivery</strong>
+      </div>
+
+      <div class="order-card" style="flex-direction: column; align-items: flex-start;">
+        <h3 style="margin-bottom: 1rem;">Items</h3>
+        <table style="width: 100%; border-collapse: collapse;">
+          <tr><td>Shirts × 3</td><td style="text-align: right;">₹90</td></tr>
+          <tr><td>Jeans × 2</td><td style="text-align: right;">₹100</td></tr>
+          <tr><td>Towels × 2</td><td style="text-align: right;">₹80</td></tr>
+          <tr><td>Pickup & Delivery</td><td style="text-align: right;">₹50</td></tr>
+          <tr><td><strong>Total</strong></td><td style="text-align: right;"><strong>₹380</strong></td></tr>
+        </table>
+      </div>
+    </main>
+  </div>
+</body>
+</html>

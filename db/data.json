@@ -1,0 +1,83 @@
+{
+  "users": [
+    {
+      "id": 1,
+      "email": "admin@laundrywallah.com",
+      "password_hash": "$2a$10$l.dvLQz4RwO2xM.4TFnZ8u01eSL16RJPjCdivGgbUvDjUu5aHinfu",
+      "name": "Admin",
+      "phone": "",
+      "address": "",
+      "role": "admin",
+      "created_at": "2026-02-14T14:03:36.382Z"
+    },
+    {
+      "email": "k@1",
+      "password_hash": "$2a$10$55AuJgBAUSRDKUsh0H1nM.HFmWantYqWdgTXUQizWR5tp7TD2TNtq",
+      "name": "kume;",
+      "phone": "9029494154",
+      "address": "ideal",
+      "role": "user",
+      "id": 2,
+      "created_at": "2026-02-14T14:05:25.596Z"
+    }
+  ],
+  "services": [
+    {
+      "id": 1,
+      "name": "Shirt/T-shirt",
+      "price_per_item": 30,
+      "category": "clothes"
+    },
+    {
+      "id": 2,
+      "name": "Jeans/Trousers",
+      "price_per_item": 50,
+      "category": "clothes"
+    },
+    {
+      "id": 3,
+      "name": "Bedsheet Single",
+      "price_per_item": 80,
+      "category": "bedding"
+    },
+    {
+      "id": 4,
+      "name": "Bedsheet Double",
+      "price_per_item": 120,
+      "category": "bedding"
+    },
+    {
+      "id": 5,
+      "name": "Towel",
+      "price_per_item": 40,
+      "category": "bedding"
+    },
+    {
+      "id": 6,
+      "name": "Saree/Delicate",
+      "price_per_item": 100,
+      "category": "delicate"
+    },
+    {
+      "id": 7,
+      "name": "Jacket/Coat",
+      "price_per_item": 80,
+      "category": "clothes"
+    }
+  ],
+  "orders": [
+    {
+      "user_id": 2,
+      "pickup_date": "2026-02-16",
+      "pickup_slot": "9-12",
+      "drop_date": "2026-02-18",
+      "drop_slot": "9-12",
+      "items": "[{\"service_id\":1,\"quantity\":6},{\"service_id\":2,\"quantity\":5},{\"service_id\":3,\"quantity\":2}]",
+      "total_amount": 640,
+      "address": "mira road",
+      "id": 1,
+      "status": "clothes_picked_up",
+      "created_at": "2026-02-14T14:07:07.142Z"
+    }
+  ]
+}

@@ -1,0 +1,119 @@
+/* Auth Pages - Login & Register */
+.auth-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #eff6ff 0%, #e0f2fe 50%, #fef3c7 100%);
+  padding: 2rem;
+}
+
+.auth-card {
+  background: white;
+  border-radius: 1rem;
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+  width: 100%;
+  max-width: 420px;
+  padding: 2.5rem;
+}
+
+.auth-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.auth-header .logo {
+  font-size: 1.75rem;
+  font-weight: 800;
+  color: var(--primary, #2563eb);
+}
+
+.auth-header .logo span {
+  color: var(--accent, #f59e0b);
+}
+
+.auth-header h1 {
+  font-size: 1.5rem;
+  margin: 1rem 0 0.5rem;
+  color: var(--dark, #1e293b);
+}
+
+.auth-header p {
+  color: var(--gray, #64748b);
+  font-size: 0.95rem;
+}
+
+.auth-form .form-group {
+  margin-bottom: 1.25rem;
+}
+
+.auth-form label {
+  display: block;
+  font-weight: 600;
+  margin-bottom: 0.5rem;
+  color: var(--dark, #1e293b);
+}
+
+.auth-form input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border: 2px solid #e2e8f0;
+  border-radius: 0.5rem;
+  font-size: 1rem;
+  transition: border-color 0.2s;
+}
+
+.auth-form input:focus {
+  outline: none;
+  border-color: var(--primary, #2563eb);
+}
+
+.auth-form .btn-submit {
+  width: 100%;
+  padding: 0.875rem;
+  margin-top: 0.5rem;
+  background: linear-gradient(135deg, var(--primary, #2563eb), var(--secondary, #0ea5e9));
+  color: white;
+  border: none;
+  border-radius: 0.5rem;
+  font-weight: 600;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.auth-form .btn-submit:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(37, 99, 235, 0.4);
+}
+
+.auth-footer {
+  text-align: center;
+  margin-top: 1.5rem;
+  color: var(--gray, #64748b);
+  font-size: 0.95rem;
+}
+
+.auth-footer a {
+  color: var(--primary, #2563eb);
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.auth-footer a:hover {
+  text-decoration: underline;
+}
+
+.back-home {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--gray, #64748b);
+  text-decoration: none;
+  margin-bottom: 1rem;
+  font-size: 0.9rem;
+}
+
+.back-home:hover {
+  color: var(--primary, #2563eb);
+}

@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Place Order — Laundry Wallah</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+  <div class="dashboard-layout">
+    <header class="dash-header">
+      <a href="../index.html" class="logo">Laundry <span>Wallah</span></a>
+      <nav class="dash-nav">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="orders.html">My Orders</a>
+        <a href="new-order.html">Place Order</a>
+        <a href="../index.html" id="logoutLink">Logout</a>
+      </nav>
+    </header>
+
+    <main class="dash-main">
+      <h1 class="dash-title">Place New Order</h1>
+
+      <form class="order-form" id="orderForm">
+        <div class="form-section">
+          <h3>Delivery Address</h3>
+          <input type="text" id="address" placeholder="Pickup & delivery address" required style="padding: 0.75rem; border: 2px solid #e2e8f0; border-radius: 0.5rem; width: 100%; max-width: 400px;">
+        </div>
+
+        <div class="form-section">
+          <h3>Pickup Slot</h3>
+          <p style="color: var(--gray); margin-bottom: 1rem; font-size: 0.95rem;">Select date and time for clothes pickup</p>
+          <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Date</label>
+          <input type="date" id="pickupDate" required style="padding: 0.75rem; border: 2px solid #e2e8f0; border-radius: 0.5rem; margin-bottom: 1rem; width: 100%; max-width: 250px;">
+          <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Time Slots</label>
+          <div class="slots-grid" id="pickupSlots">
+            <button type="button" class="slot-btn" data-slot="9-12">9 AM - 12 PM</button>
+            <button type="button" class="slot-btn" data-slot="12-3">12 PM - 3 PM</button>
+            <button type="button" class="slot-btn" data-slot="3-6">3 PM - 6 PM</button>
+            <button type="button" class="slot-btn" data-slot="6-9">6 PM - 9 PM</button>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h3>Delivery Slot</h3>
+          <p style="color: var(--gray); margin-bottom: 1rem; font-size: 0.95rem;">Select date and time for delivery</p>
+          <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Date</label>
+          <input type="date" id="dropDate" required style="padding: 0.75rem; border: 2px solid #e2e8f0; border-radius: 0.5rem; margin-bottom: 1rem; width: 100%; max-width: 250px;">
+          <label style="display: block; margin-bottom: 0.5rem; font-weight: 600;">Time Slots</label>
+          <div class="slots-grid" id="dropSlots">
+            <button type="button" class="slot-btn" data-slot="9-12">9 AM - 12 PM</button>
+            <button type="button" class="slot-btn" data-slot="12-3">12 PM - 3 PM</button>
+            <button type="button" class="slot-btn" data-slot="3-6">3 PM - 6 PM</button>
+            <button type="button" class="slot-btn" data-slot="6-9">6 PM - 9 PM</button>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h3>Laundry Items</h3>
+          <p style="color: var(--gray); margin-bottom: 1rem; font-size: 0.95rem;">Add quantity for each item. Rates are fixed.</p>
+          <div class="items-grid" id="itemsContainer">
+            <p style="color: var(--gray);">Loading services…</p>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <div class="payment-summary">
+            <strong>Subtotal:</strong> <span id="subtotal">₹0</span><br>
+            <strong>Pickup + Delivery:</strong> ₹50<br>
+            <strong class="total" id="totalDisplay">Total: ₹50</strong>
+          </div>
+        </div>
+
+        <div class="form-section">
+          <h3>Payment</h3>
+          <p style="color: var(--gray); margin-bottom: 1rem; font-size: 0.95rem;">Place order — payment can be integrated with Razorpay/Stripe later.</p>
+        </div>
+
+        <p id="formError" style="color: #dc2626; font-size: 0.9rem; margin-bottom: 0.5rem; display: none;"></p>
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem;">Place Order</button>
+      </form>
+    </main>
+  </div>
+
+  <script src="../js/config.js"></script>
+  <script src="../js/api.js"></script>
+  <script>
+    const DELIVERY_FEE = 50;
+    let services = [];
+
+    document.getElementById('logoutLink').addEventListener('click', function(e) {
+      e.preventDefault();
+      clearToken();
+      window.location.href = '../index.html';
+    });
+
+    if (!getToken()) {
+      window.location.href = '../login.html';
+    }
+
+    async function loadServices() {
+      try {
+        services = await api('/services');
+        const container = document.getElementById('itemsContainer');
+        container.innerHTML = services.map(s => `
+          <div class="item-row">
+            <label>${s.name} — ₹${s.price_per_item} each</label>
+            <input type="number" min="0" value="0" data-service-id="${s.id}" data-price="${s.price_per_item}" class="qty-input">
+            <span class="item-total">₹0</span>
+          </div>`).join('');
+
+        document.querySelectorAll('.qty-input').forEach(input => {
+          input.addEventListener('input', updateTotal);
+        });
+      } catch (err) {
+        document.getElementById('itemsContainer').innerHTML = '<p style="color: #dc2626;">Failed to load services. ' + err.message + '</p>';
+      }
+    }
+
+    function updateTotal() {
+      let subtotal = 0;
+      document.querySelectorAll('.qty-input').forEach(input => {
+        const qty = parseInt(input.value) || 0;
+        const price = parseInt(input.dataset.price);
+        const itemTotal = qty * price;
+        subtotal += itemTotal;
+        input.parentElement.querySelector('.item-total').textContent = '₹' + itemTotal;
+      });
+      const total = subtotal + DELIVERY_FEE;
+      document.getElementById('subtotal').textContent = '₹' + subtotal;
+      document.getElementById('totalDisplay').textContent = 'Total: ₹' + total;
+    }
+
+    document.querySelectorAll('.slot-btn').forEach(btn => {
+      btn.addEventListener('click', function() {
+        const parent = this.closest('.form-section');
+        parent.querySelectorAll('.slot-btn').forEach(b => b.classList.remove('selected'));
+        this.classList.add('selected');
+      });
+    });
+
+    document.getElementById('orderForm').addEventListener('submit', async function(e) {
+      e.preventDefault();
+      const errEl = document.getElementById('formError');
+      errEl.style.display = 'none';
+
+      const pickupSlot = document.querySelector('#pickupSlots .slot-btn.selected');
+      const dropSlot = document.querySelector('#dropSlots .slot-btn.selected');
+      const address = document.getElementById('address').value.trim();
+      if (!address) {
+        errEl.textContent = 'Please enter delivery address.';
+        errEl.style.display = 'block';
+        return;
+      }
+      if (!pickupSlot || !dropSlot) {
+        errEl.textContent = 'Please select pickup and delivery time slots.';
+        errEl.style.display = 'block';
+        return;
+      }
+
+      const items = [];
+      document.querySelectorAll('.qty-input').forEach(input => {
+        const qty = parseInt(input.value) || 0;
+        if (qty > 0)
+          items.push({ service_id: parseInt(input.dataset.serviceId), quantity: qty });
+      });
+      if (items.length === 0) {
+        errEl.textContent = 'Please add at least one laundry item.';
+        errEl.style.display = 'block';
+        return;
+      }
+
+      try {
+        await api('/orders', {
+          method: 'POST',
+          body: JSON.stringify({
+            pickup_date: document.getElementById('pickupDate').value,
+            pickup_slot: pickupSlot.dataset.slot,
+            drop_date: document.getElementById('dropDate').value,
+            drop_slot: dropSlot.dataset.slot,
+            items,
+            address
+          })
+        });
+        window.location.href = 'orders.html';
+      } catch (err) {
+        errEl.textContent = err.message || 'Failed to place order.';
+        errEl.style.display = 'block';
+      }
+    });
+
+    loadServices();
+  </script>
+</body>
+</html>

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Dashboard — Laundry Wallah</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+  <div class="dashboard-layout admin-dash">
+    <header class="dash-header">
+      <a href="dashboard.html" class="logo">Laundry <span>Wallah</span> Admin</a>
+      <nav class="dash-nav">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="orders.html">Orders</a>
+        <a href="login.html" id="logoutLink">Logout</a>
+      </nav>
+    </header>
+
+    <main class="dash-main">
+      <div class="dash-welcome">
+        <h1 class="greeting">Admin Dashboard</h1>
+        <p class="sub">Overview of orders and quick access to manage customer laundry requests.</p>
+      </div>
+
+      <!-- Stats -->
+      <div class="stat-cards">
+        <div class="stat-card stat-primary">
+          <div class="stat-icon">📋</div>
+          <div class="stat-value" id="statTotal">0</div>
+          <div class="stat-label">Total Orders</div>
+        </div>
+        <div class="stat-card stat-warning">
+          <div class="stat-icon">⏳</div>
+          <div class="stat-value" id="statPending">0</div>
+          <div class="stat-label">Pending Pickup</div>
+        </div>
+        <div class="stat-card stat-info">
+          <div class="stat-icon">🔄</div>
+          <div class="stat-value" id="statProgress">0</div>
+          <div class="stat-label">In Progress</div>
+        </div>
+        <div class="stat-card stat-success">
+          <div class="stat-icon">✅</div>
+          <div class="stat-value" id="statDelivered">0</div>
+          <div class="stat-label">Delivered</div>
+        </div>
+      </div>
+
+      <!-- Quick action -->
+      <div class="quick-actions">
+        <a href="orders.html" class="quick-action-card">
+          <span class="qa-icon">📦</span>
+          <div class="qa-text">
+            <strong>View All Orders</strong>
+            <span>Manage orders & update status: Pickup → Washing → Delivery</span>
+          </div>
+        </a>
+      </div>
+
+      <!-- Status flow reminder -->
+      <div style="background: white; border-radius: 1rem; padding: 1.5rem; box-shadow: 0 4px 20px rgba(0,0,0,0.06); border: 1px solid rgba(226,232,240,0.6);">
+        <h3 style="margin-bottom: 1rem; font-size: 1.1rem; color: var(--dark);">Status flow</h3>
+        <div style="display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center;">
+          <span class="order-status status-pending">Pending</span>
+          <span style="color: #94a3b8;">→</span>
+          <span class="order-status status-pickup">Pickup Scheduled</span>
+          <span style="color: #94a3b8;">→</span>
+          <span class="order-status status-pickup">Clothes Picked Up</span>
+          <span style="color: #94a3b8;">→</span>
+          <span class="order-status status-washing">Washing Completed</span>
+          <span style="color: #94a3b8;">→</span>
+          <span class="order-status status-delivery">Out for Delivery</span>
+          <span style="color: #94a3b8;">→</span>
+          <span class="order-status status-delivered">Delivered</span>
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <script src="../js/config.js"></script>
+  <script src="../js/api.js"></script>
+  <script>
+    document.getElementById('logoutLink').addEventListener('click', function(e) {
+      e.preventDefault();
+      clearAdminToken();
+      window.location.href = 'login.html';
+    });
+
+    if (!getAdminToken()) {
+      window.location.href = 'login.html';
+    } else {
+      (async function() {
+        try {
+          const stats = await api('/admin/stats', {}, true);
+          document.getElementById('statTotal').textContent = stats.total;
+          document.getElementById('statPending').textContent = stats.pending;
+          document.getElementById('statProgress').textContent = stats.inProgress;
+          document.getElementById('statDelivered').textContent = stats.delivered;
+        } catch (err) {
+          if (err.message.includes('401') || err.message.includes('403')) {
+            clearAdminToken();
+            window.location.href = 'login.html';
+          }
+        }
+      })();
+    }
+  </script>
+</body>
+</html>

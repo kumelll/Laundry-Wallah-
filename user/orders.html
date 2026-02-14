@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Orders — Laundry Wallah</title>
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/dashboard.css">
+</head>
+<body>
+  <div class="dashboard-layout">
+    <header class="dash-header">
+      <a href="../index.html" class="logo">Laundry <span>Wallah</span></a>
+      <nav class="dash-nav">
+        <a href="dashboard.html">Dashboard</a>
+        <a href="orders.html">My Orders</a>
+        <a href="new-order.html">Place Order</a>
+        <a href="../index.html" id="logoutLink">Logout</a>
+      </nav>
+    </header>
+
+    <main class="dash-main">
+      <h1 class="dash-title">My Orders</h1>
+      <p style="margin-bottom: 2rem; color: var(--gray);">Track and manage all your laundry orders in one place.</p>
+
+      <a href="new-order.html" class="btn btn-primary" style="margin-bottom: 2rem;">+ Place New Order</a>
+
+      <div id="ordersContainer">
+        <p style="color: var(--gray);">Loading…</p>
+      </div>
+    </main>
+  </div>
+
+  <script src="../js/config.js"></script>
+  <script src="../js/api.js"></script>
+  <script>
+    const STATUS_CLASS = {
+      pending: 'status-pending', pickup_scheduled: 'status-pickup', clothes_picked_up: 'status-pickup',
+      washing_completed: 'status-washing', out_for_delivery: 'status-delivery', delivered: 'status-delivered'
+    };
+    const STATUS_LABEL = {
+      pending: 'Pending', pickup_scheduled: 'Pickup Scheduled', clothes_picked_up: 'Clothes Picked Up',
+      washing_completed: 'Washing Completed', out_for_delivery: 'Out for Delivery', delivered: 'Delivered'
+    };
+
+    document.getElementById('logoutLink').addEventListener('click', function(e) {
+      e.preventDefault();
+      clearToken();
+      window.location.href = '../index.html';
+    });
+
+    if (!getToken()) {
+      window.location.href = '../login.html';
+      throw new Error('redirect');
+    }
+
+    (async function() {
+      try {
+        const orders = await api('/orders');
+        const container = document.getElementById('ordersContainer');
+        if (orders.length === 0) {
+          container.innerHTML = `
+            <div class="empty-state">
+              <div class="empty-icon">🧺</div>
+              <h3 class="empty-title">No orders yet</h3>
+              <p class="empty-desc">You haven't placed any orders. When you do, they'll show up here with status updates.</p>
+              <a href="new-order.html" class="btn btn-primary">Place Your First Order</a>
+            </div>`;
+        } else {
+          container.innerHTML = '<div class="order-grid">' + orders.map(o => `
+            <div class="order-card">
+              <div>
+                <div class="order-id">Order #LW-${o.id}</div>
+                <div class="order-date">Pickup: ${o.pickup_date} ${o.pickup_slot} · Drop: ${o.drop_date} ${o.drop_slot}</div>
+              </div>
+              <div>
+                <span class="order-total">₹${o.total_amount}</span>
+                <span class="order-status ${STATUS_CLASS[o.status] || 'status-pending'}">${STATUS_LABEL[o.status] || o.status}</span>
+              </div>
+              <a href="order-detail.html?id=${o.id}" class="btn btn-outline" style="padding: 0.5rem 1rem;">View</a>
+            </div>`).join('') + '</div>';
+        }
+      } catch (err) {
+        if (err.message.includes('401') || err.message.includes('Authentication')) {
+          clearToken();
+          window.location.href = '../login.html';
+        } else {
+          document.getElementById('ordersContainer').innerHTML = '<p style="color: #dc2626;">Failed to load orders. ' + err.message + '</p>';
+        }
+      }
+    })();
+  </script>
+</body>
+</html>
