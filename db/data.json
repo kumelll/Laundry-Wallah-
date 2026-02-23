@@ -19,6 +19,16 @@
       "role": "user",
       "id": 2,
       "created_at": "2026-02-14T14:05:25.596Z"
+    },
+    {
+      "email": "kuwar@1",
+      "password_hash": "$2a$10$khyJoehsqlrsDr7Pc6wCKehGzam0eea3cbGJHY8lRlmLs2zuKRfXO",
+      "name": "kuwar",
+      "phone": "5165156151",
+      "address": "thane",
+      "role": "user",
+      "id": 3,
+      "created_at": "2026-02-23T07:18:09.870Z"
     }
   ],
   "services": [
@@ -78,6 +88,19 @@
       "id": 1,
       "status": "clothes_picked_up",
       "created_at": "2026-02-14T14:07:07.142Z"
+    },
+    {
+      "user_id": 3,
+      "pickup_date": "2026-02-24",
+      "pickup_slot": "12-3",
+      "drop_date": "2026-02-27",
+      "drop_slot": "12-3",
+      "items": "[{\"service_id\":1,\"quantity\":1},{\"service_id\":2,\"quantity\":1},{\"service_id\":3,\"quantity\":3},{\"service_id\":4,\"quantity\":4}]",
+      "total_amount": 850,
+      "address": "Ideal Colony, Kothrud",
+      "id": 2,
+      "status": "out_for_delivery",
+      "created_at": "2026-02-23T07:20:06.784Z"
     }
   ]
 }
