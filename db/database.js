@@ -3,7 +3,10 @@ const fs = require('fs');
 const path = require('path');
 const bcrypt = require('bcryptjs');
 
-const DATA_FILE = path.join(__dirname, 'data.json');
+let DATA_FILE = path.join(__dirname, 'data.json');
+if (process.env.DATA_FILE) {
+  DATA_FILE = process.env.DATA_FILE;
+}
 
 let data = { users: [], services: [], orders: [] };
 
@@ -17,7 +20,16 @@ function load() {
 }
 
 function save() {
-  fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), 'utf8');
+  try {
+    const dir = path.dirname(DATA_FILE);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), 'utf8');
+    console.log(`DB saved to ${DATA_FILE}`);
+  } catch (err) {
+    console.error(`DB save failed: ${err.message}`);
+  }
 }
 
 function init() {
@@ -105,8 +117,13 @@ const db = {
   },
 
   updateOrderStatus(id, status) {
-    const o = data.orders.find(x => x.id === parseInt(String(id)));
-    if (!o) return null;
+    const intId = parseInt(String(id));
+    const o = data.orders.find(x => x.id === intId);
+    if (!o) {
+      console.log(`Order ${intId} not found`);
+      return null;
+    }
+    console.log(`Updating order ${intId} to status ${status}`);
     o.status = status;
     save();
     return o;

@@ -8,11 +8,23 @@
 
 ## How to deploy correctly
 
+**Note on Database Persistence:** `db/data.json` is ephemeral on most free tiers (lost on restart/sleep). Updates don't persist.
+
+**Fix:** 
+- Use paid persistent disk (Render Disks, Railway volume).
+- Set env var `DATA_FILE=/persistent/path/data.json` (e.g., Render: mount disk at /data, DATA_FILE=/data/data.json).
+- Or migrate to SQLite/Postgres.
+
+
 ### Option A: Single host (recommended)
 
 Deploy the **entire project** (including `server.js`) to a Node.js host so the backend and frontend run on the same domain.
 
-**Hosts:** Render, Railway, Heroku, Fly.io
+**Hosts with Persistence:**
+- Railway: Auto-volumes.
+- Render (paid): Add Disk, set root /data, env DATA_FILE=/data/data.json.
+- Heroku: Paid dyno + add-on.
+- Fly.io: Volumes.
 
 1. Connect your repo to the host.
 2. Set **Start Command**: `npm start` (or `node server.js`).
